@@ -91,9 +91,8 @@ function create(req, res, next) {
 }
 // updates an existing dish with the new values recieved from the request body
 function update(req, res, next) {
-    const { data: { id, name, description, price, image_url } = {} } = req.body
-
-    res.locals.foundDish.id = id
+    const { data: { name, description, price, image_url } = {} } = req.body
+       
     res.locals.foundDish.name = name 
     res.locals.foundDish.description = description
     res.locals.foundDish.price = price
