@@ -7,6 +7,7 @@ const nextId = require("../utils/nextId");
 
 // Validation Middleware
 
+// checks to make sure the order exists based on the id 
 function orderExists(req, res, next) {
     const { orderId } = req.params
     const foundOrder = orders.find(order => order.id === orderId)
@@ -20,7 +21,7 @@ function orderExists(req, res, next) {
         message: `get this order out my faceeeee ${orderId}`
     })
 }
-
+// checking to make sure a specific property in the request body is not empty
 function dataHasProperty(propertyName) {
     return function (req, res, next) {
         const { data = {} } = req.body
@@ -34,6 +35,7 @@ function dataHasProperty(propertyName) {
     }
 }
 
+// checking to make sure the order has at lest one dish and that the number of items is valid
 function validateDishes(req, res, next) {
     const { data: { dishes } = {} } = req.body 
 
@@ -90,15 +92,18 @@ function validateId(req, res, next) {
 }
 
 // RouteHandlers
+
+// list out all orders of dishes
 function list(req, res, next) {
     const dishId = req.params.dishId
     res.json({ data: orders.filter(dishId ? order => order.id : () => true )})
 }
-
+// finds a specific order based on the order id
 function read(req, res, next) {
     res.json({ data: res.locals.order })
 }
-
+// creates a new order object with the persons info a default status of pending and the clients requested dishes
+// all destructured from the request body
 function create(req, res, next) {
     const { data: { deliverTo, mobileNumber, status = "pending", dishes } = {} } = req.body
 
@@ -112,7 +117,7 @@ function create(req, res, next) {
     orders.push(newOrder)
     res.status(201).json({ data: newOrder })
 }
-
+// grabs a dish and updates the dish based on the info provided in the request body 
 function update(req, res, next) {
     const { data: { deliverTo, mobileNumber, status, dishes } = {} } = req.body
 
@@ -124,6 +129,7 @@ function update(req, res, next) {
     res.json({ data: res.locals.order })
 }
 
+// cancels and deletes an order 
 function destroy(req, res, next) {
     const orderId = res.locals.orderId
     const index = orders.findIndex(order => order.id === orderId)
